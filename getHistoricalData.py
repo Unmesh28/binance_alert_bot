@@ -1,23 +1,34 @@
-binanceApiKey = 'E3Tzfl1rtOyljmVTjxvsW1az9k7uXVYelrmsPcBwfHyy2ulwWQiT3IxSeOawpwwH'
-binanceSecret = '2FtDBi6y2WYi8Pp32ScDSYSm28uRkHg1LJMXSaLxEQJi88o4Fr1Z8uWuBhSihWX2'
-
 from pydoc import cli
 from traceback import print_tb
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 import pandas as pd
 from datetime import datetime, timedelta    
+import settings
+from sendTelegramMessage import send_message
 
-client = Client(binanceApiKey, binanceSecret)
 
-historical = client.get_historical_klines('ETHUSDT', Client.KLINE_INTERVAL_1HOUR, '8 Feb 2022')
-historical_df = pd.DataFrame(historical)
+client = Client(settings.binanceApiKey, settings.binanceSecret)
 
-historical_df.columns = ['Open Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close Time', 
+def getPreviousData(ticker):
+    historical = []
+    try:
+        historical = client.get_historical_klines(ticker, Client.KLINE_INTERVAL_1HOUR, '8 Feb 2022')
+    
+        historical_df = pd.DataFrame(historical)
+
+        historical_df.columns = ['Open Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close Time', 
                             'Quote Asset Volume', 'Number of Trades', 'TB Base Volume', 'TB Quote Volume', 'Ignore']
-print(historical_df.head())
 
+    except: 
+        print("Some error from binance API [Ticker must be delisted]")
+   
+    if historical_df.empty:
+        print('DataFrame is empty!')
+    else :
+        find_if_fibonacci(historical_df, 40, ticker)
 
-def find_if_fibonacci1(df):
+def find_if_fibonacci(df, candles, ticker):
+        df = df.iloc[-candles::]
         print(df)
         temp = df["Close"].astype(float)
         mini = float(min(df['Low']))
@@ -30,9 +41,9 @@ def find_if_fibonacci1(df):
         print(range_max)
         print(temp.iloc[-1])
         if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-            message = "Alert: Fibonacci Retracement \nSymbol :"+symbol+"\nInterval : 1H\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
+            message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : 1H\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
+            send_message(settings.chat_id_list,"sendMessage",message)
             print(message)
         else :
             print('Not Found')
 
-find_if_fibonacci1(historical_df)
