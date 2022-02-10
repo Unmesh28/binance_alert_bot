@@ -32,16 +32,11 @@ def getPreviousData(ticker, interval):
 
 def find_if_fibonacci(df, candles, ticker, interval):
         df = df.iloc[-candles::]
-        print(df)
         temp = df["Close"].astype(float)
         mini = float(min(df['Low']))
         maxi = float(max(df['High']))   
-        print(mini)
-        print(maxi)
         range_min = maxi - (maxi-mini)*0.67
         range_max = maxi - (maxi-mini)*0.6
-        print(range_min)
-        print(range_max)
         print(temp.iloc[-1])
         if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
             message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
