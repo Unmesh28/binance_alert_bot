@@ -5,14 +5,17 @@ import pandas as pd
 from datetime import datetime, timedelta    
 import settings
 from sendTelegramMessage import send_message
-
+from getInterval import getInterval
+from getPreviousDateString import getPreviousDateString
 
 client = Client(settings.binanceApiKey, settings.binanceSecret)
 
-def getPreviousData(ticker):
+def getPreviousData(ticker, interval):
+    new_interval = getInterval(interval)
+    previousDateString = getPreviousDateString(interval)
     historical = []
     try:
-        historical = client.get_historical_klines(ticker, Client.KLINE_INTERVAL_1HOUR, '8 Feb 2022')
+        historical = client.get_historical_klines(ticker, new_interval, previousDateString)
     
         historical_df = pd.DataFrame(historical)
 
@@ -25,9 +28,9 @@ def getPreviousData(ticker):
     if historical_df.empty:
         print('DataFrame is empty!')
     else :
-        find_if_fibonacci(historical_df, 40, ticker)
+        find_if_fibonacci(historical_df, 40, ticker, interval)
 
-def find_if_fibonacci(df, candles, ticker):
+def find_if_fibonacci(df, candles, ticker, interval):
         df = df.iloc[-candles::]
         print(df)
         temp = df["Close"].astype(float)
@@ -41,7 +44,7 @@ def find_if_fibonacci(df, candles, ticker):
         print(range_max)
         print(temp.iloc[-1])
         if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-            message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : 1H\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
+            message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
             send_message(settings.chat_id_list,"sendMessage",message)
             print(message)
         else :
