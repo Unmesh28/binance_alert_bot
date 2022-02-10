@@ -45,8 +45,9 @@ def find_if_fibonacci(df, candles, ticker, interval):
         print(temp.iloc[-1])
         if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
             message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
-            send_message(settings.chat_id_list,"sendMessage",message)
-            print(message)
+            for chat_id in settings.chat_id_list:
+                send_message(chat_id,"sendMessage",message)
+                print(message)     
         else :
             print('Not Found')
 
