@@ -1,5 +1,6 @@
 from pydoc import cli
 from traceback import print_tb
+from wsgiref.util import setup_testing_defaults
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 import pandas as pd
 from datetime import datetime, timedelta    
@@ -33,16 +34,17 @@ def getPreviousData(ticker, interval):
 def find_if_fibonacci(df, candles, ticker, interval):
         df = df.iloc[-candles::]
         temp = df["Close"].astype(float)
-        mini = float(min(df['Low']))
-        maxi = float(max(df['High']))   
+        low = float(min(df['Low']))
+        high = float(max(df['High']))   
+        mini = float(min(df['Close']))
+        maxi = float(max(df['Close'])) 
         range_min = maxi - (maxi-mini)*0.67
         range_max = maxi - (maxi-mini)*0.6
         print(temp.iloc[-1])
         if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-            message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(maxi)+", the low level is "+str(mini)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
-            for chat_id in settings.chat_id_list:
-                send_message(chat_id,"sendMessage",message)
-                print(message)     
+            message = "Alert: Fibonacci Retracement \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])
+            for chat_id in settings.token_chatID_dict:
+                send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
         else :
             print('Not Found')
 

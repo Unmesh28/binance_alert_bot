@@ -9,7 +9,7 @@ def job(t):
     print(datetime.datetime.now())
     return
 
-schedule.every().day.at("03:39").do(job,'1h')
+schedule.every().day.at("10:10").do(job,'1h')
 schedule.every().day.at("01:00").do(job,'1h')
 schedule.every().day.at("02:00").do(job,'1h')
 schedule.every().day.at("03:00").do(job,'1h')
