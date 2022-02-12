@@ -48,7 +48,7 @@ def find_if_fibonacci(df, candles, ticker, interval):
             range_max = maxi - difference * 0.6
             print(temp.iloc[-1])
             if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-                message = "Alert: Fibonacci Retracement [UpTrend] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_max)+" 0.67 Level : "+str(range_min)
+                message = "Alert: Fibonacci Retracement [UpTrend] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_max)+" \n0.67 Level : "+str(range_min)
                 for chat_id in settings.token_chatID_dict:
                     send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
             else :
@@ -58,7 +58,7 @@ def find_if_fibonacci(df, candles, ticker, interval):
             range_min = mini + difference * 0.6
             print(temp.iloc[-1])
             if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-                message = "Alert: Fibonacci Retracement [DownTrend] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_min)+" 0.67 Level : "+str(range_max)
+                message = "Alert: Fibonacci Retracement [DownTrend] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_min)+" \n0.67 Level : "+str(range_max)
                 for chat_id in settings.token_chatID_dict:
                     send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
             else :
