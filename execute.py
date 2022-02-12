@@ -7,3 +7,6 @@ def execute(interval):
     #getPreviousData('BTTUSDT')
     for ticker in tickers:
         getPreviousData(ticker, interval)
+
+# execute('1h')
+# execute('4h')
