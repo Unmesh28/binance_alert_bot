@@ -36,12 +36,17 @@ def getPreviousData(ticker, interval):
 def find_if_fibonacci(df, candles, ticker, interval):
         df = df.iloc[-candles::]
         temp = df["Close"].astype(float)
+        # ind = (temp/temp.cummin())[(temp/temp.cummin()) == (temp/temp.cummin()).max()].index[0]
+        # mini = temp.loc[:ind].min()
+        # maxi = temp.loc[ind]
         low = float(min(df['Low']))
         high = float(max(df['High']))   
         mini = float(df['Close'].min())
         maxi = float(df['Close'].max()) 
         maxValueIndex = df['Close'].astype(float).idxmax()
         minValueIndex = df['Close'].astype(float).idxmin()
+        print(maxi)
+        print(mini)
         difference = maxi - mini
         if(minValueIndex < maxValueIndex) :
             range_min = maxi - difference * 0.67
