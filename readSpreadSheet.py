@@ -2,7 +2,7 @@ import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
 import gspread
 
-def readFromGoogleSpreadSheet(credentials_path, sheet_name):
+def readFromGoogleSpreadSheet(credentials_path, sheet_name, sheet_no):
     
     #Define Scope
     scope = ['https://spreadsheets.google.com/feeds',
@@ -13,8 +13,8 @@ def readFromGoogleSpreadSheet(credentials_path, sheet_name):
     client = gspread.authorize(creds)
 
     filter_sheet = client.open(sheet_name)
-    sheet_instance = filter_sheet.get_worksheet(0)
+    sheet_instance = filter_sheet.get_worksheet(sheet_no)
     records_data = sheet_instance.get_all_records()
-    ticker_df = pd.DataFrame.from_dict(records_data)
-    return ticker_df['tickerName']
+    return records_data
+    
     

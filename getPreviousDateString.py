@@ -1,13 +1,19 @@
-def getPreviousDateString(interval):
+def getPreviousDateString(interval, candles):
     if(interval == '1m'):
-        return '1 minute ago UTC'
+        return '{} minutes ago UTC'.format(candles + 2)
     if(interval == '5m'):
-        return '4 hours ago UTC'
+        return '{} hours ago UTC'.format(int((candles / 12) + 1))
     if(interval == '15m'):
-        return '12 hours ago UTC'
+        return '{} hours ago UTC'.format(int((candles / 4) + 1))
     if(interval == '1h'):
-        return '2 days ago UTC'
+        return '{} days ago UTC'.format(int((candles / 24) + 1))
     if(interval == '4h'):
-        return '8 days ago UTC' 
+        return '{} days ago UTC'.format(int((candles / 6) + 1))
+    if(interval == '6h'):
+        return '{} days ago UTC'.format(int((candles / 4) + 1))
+    if(interval == '12h'):
+        return '{} days ago UTC'.format(int((candles / 2) + 1))    
     if(interval == '1d'):
-        return '2 months ago UTC'
+        return '{} months ago UTC'.format(int((candles / 31) + 1))
+
+# print(getPreviousDateString('12h', 40))

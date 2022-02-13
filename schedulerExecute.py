@@ -3,12 +3,13 @@ import schedule
 import time
 import datetime 
 
-def job(t):
+def job(t, strategy):
     #print("I'm working...", t)
-    execute(t)
+    execute(t, strategy)
     print(datetime.datetime.now())
     return
 
+schedule.every().day.at("11:31").do(job,'1h', 'fib')
 schedule.every().day.at("01:00").do(job,'1h')
 schedule.every().day.at("02:00").do(job,'1h')
 schedule.every().day.at("03:00").do(job,'1h')

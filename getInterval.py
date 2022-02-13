@@ -11,5 +11,9 @@ def getInterval(interval):
         return Client.KLINE_INTERVAL_1HOUR
     if(interval == '4h'):
         return Client.KLINE_INTERVAL_4HOUR
+    if(interval == '6h'):
+        return Client.KLINE_INTERVAL_6HOUR
+    if(interval == '12h'): 
+        return Client.KLINE_INTERVAL_12HOUR
     if(interval == '1d'):
         return Client.KLINE_INTERVAL_1DAY

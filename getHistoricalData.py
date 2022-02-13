@@ -12,12 +12,13 @@ from getPreviousDateString import getPreviousDateString
 
 client = Client(settings.binanceApiKey, settings.binanceSecret)
 
-def getPreviousData(ticker, interval):
+def getPreviousData(ticker, interval, candles):
     new_interval = getInterval(interval)
-    previousDateString = getPreviousDateString(interval)
+    previousDateString = getPreviousDateString(interval, candles)
     historical = []
     try:
         historical = client.get_historical_klines(ticker, new_interval, previousDateString)
+        print(previousDateString)
     
         historical_df = pd.DataFrame(historical)
 
@@ -30,7 +31,7 @@ def getPreviousData(ticker, interval):
     if historical_df.empty:
         print('DataFrame is empty!')
     else :
-        find_if_fibonacci(historical_df, 40, ticker, interval)
+        find_if_fibonacci(historical_df, candles, ticker, interval)
         #fib(historical_df, 40)
 
 def find_if_fibonacci(df, candles, ticker, interval):
@@ -53,7 +54,7 @@ def find_if_fibonacci(df, candles, ticker, interval):
             range_max = maxi - difference * 0.6
             print(temp.iloc[-1])
             if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-                message = "Alert: Fibonacci Retracement [UpTrend] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_max)+" \n0.67 Level : "+str(range_min)
+                message = "Alert: Fibonacci Retracement [LONG] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_max)+" \n0.67 Level : "+str(range_min)
                 for chat_id in settings.token_chatID_dict:
                     send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
             else :
@@ -63,7 +64,7 @@ def find_if_fibonacci(df, candles, ticker, interval):
             range_min = mini + difference * 0.6
             print(temp.iloc[-1])
             if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-                message = "Alert: Fibonacci Retracement [DownTrend] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_min)+" \n0.67 Level : "+str(range_max)
+                message = "Alert: Fibonacci Retracement [SHORT] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_min)+" \n0.67 Level : "+str(range_max)
                 for chat_id in settings.token_chatID_dict:
                     send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
             else :
