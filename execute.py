@@ -1,3 +1,4 @@
+from matplotlib.pyplot import get
 import pandas as pd
 import settings
 from readSpreadSheet import readFromGoogleSpreadSheet
@@ -11,13 +12,15 @@ def execute(interval, strategy):
     candles = 0
     if(strategy == 'fib') :
         candles =  getCandles(interval, 0)
+    if(strategy == 'bba') : 
+        candles = getCandles(interval, 1)
     
     if candles > 0 :
         for ticker in tickers:
-            getPreviousData(ticker, interval, candles)
+            getPreviousData(ticker, interval, candles, strategy)
     
     else :
         print('Candeles are zero fror this interval')
 
-execute('1m', 'fib')
+#execute('1h', 'fib')
 # execute('4h')

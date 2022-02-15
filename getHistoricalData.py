@@ -1,3 +1,5 @@
+from curses import window
+from email import message
 from pydoc import cli
 from traceback import print_tb
 #from turtle import shape
@@ -9,10 +11,12 @@ import settings
 from sendTelegramMessage import send_message
 from getInterval import getInterval
 from getPreviousDateString import getPreviousDateString
+import talib as ta
+
 
 client = Client(settings.binanceApiKey, settings.binanceSecret)
 
-def getPreviousData(ticker, interval, candles):
+def getPreviousData(ticker, interval, candles, strategy):
     new_interval = getInterval(interval)
     previousDateString = getPreviousDateString(interval, candles)
     historical = []
@@ -31,8 +35,11 @@ def getPreviousData(ticker, interval, candles):
     if historical_df.empty:
         print('DataFrame is empty!')
     else :
-        find_if_fibonacci(historical_df, candles, ticker, interval)
-        #fib(historical_df, 40)
+        if (strategy == 'fib') :
+            find_if_fibonacci(historical_df, candles, ticker, interval)
+        elif (strategy == 'bba') :
+            bollinger_bands(historical_df, candles, ticker, interval)
+
 
 def find_if_fibonacci(df, candles, ticker, interval):
         df = df.iloc[-candles::]
@@ -71,11 +78,34 @@ def find_if_fibonacci(df, candles, ticker, interval):
                 print('Not Found')
 
 
+def construct_bollinger_message(ticker, interval, upper_or_lower) :
+    initial_text = "Alert : Bolinger Band \n"
+    symbol_text = "Symbol : " +ticker + "\n"
+    interval_text = "Interval : "+interval+"\n"  
+    signal_text = "Signal : Out of"+ upper_or_lower + " band"
+    messgage = initial_text + symbol_text + "\n" + interval_text + signal_text 
+    return messgage
 
-def fib(df, candles):
-    df = df.iloc[-candles::]
-    for i in range(1, df.shape[0] - 1):
-        print(df['High'][i])
+def bollinger_bands(df, candles, ticker, interval):
+    upper,middle,lower = ta.BBANDS(df.Close[-candles::],timeperiod=20,nbdevup=2,nbdevdn=2,matype=0)
+    #print(upper)
+    df['Upper'] = upper
+    df['Lower'] = lower
+    print(ticker)
+    print(df['Upper'].iloc[-1])
+    print(df['Close'].iloc[-1])
+    if (float(df['Close'].iloc[-1]) > float(df['Upper'].iloc[-1])) :
+        #print("Out of upper band")
+        message = construct_bollinger_message(ticker, interval, " upper")
+        for chat_id in settings.token_chatID_dict:
+            send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
+    elif (float(df['Close'].iloc[-1]) < float(df['Lower'].iloc[-1])) :
+        #print("Out of lower band")
+        message = construct_bollinger_message(ticker, interval, " lower")
+        for chat_id in settings.token_chatID_dict:
+            send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
+    
+
 
 
 
