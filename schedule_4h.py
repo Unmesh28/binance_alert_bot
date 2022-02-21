@@ -10,12 +10,13 @@ def job(t, strategy):
     return
 
 
-schedule.every().day.at("01:00").do(job,'4h', 'fib')
-schedule.every().day.at("05:00").do(job,'4h', 'fib')
-schedule.every().day.at("09:00").do(job,'4h', 'fib')
-schedule.every().day.at("13:00").do(job,'4h', 'fib')
-schedule.every().day.at("17:00").do(job,'4h', 'fib')
-schedule.every().day.at("21:00").do(job,'4h', 'fib')
+schedule.every(1).minutes.do(job,'4h', 'fib')
+# schedule.every().day.at("01:00").do(job,'4h', 'fib')
+# schedule.every().day.at("05:00").do(job,'4h', 'fib')
+# schedule.every().day.at("09:00").do(job,'4h', 'fib')
+# schedule.every().day.at("13:00").do(job,'4h', 'fib')
+# schedule.every().day.at("17:00").do(job,'4h', 'fib')
+# schedule.every().day.at("21:00").do(job,'4h', 'fib')
 
 while True:
     schedule.run_pending()

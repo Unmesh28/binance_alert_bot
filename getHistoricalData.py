@@ -1,17 +1,21 @@
+import csv
 from curses import window
-from email import message
+from email import header, message
 from pydoc import cli
 from traceback import print_tb
-#from turtle import shape
 from wsgiref.util import setup_testing_defaults
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
+import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta    
+from datetime import datetime, timedelta   
 import settings
 from sendTelegramMessage import send_message
 from getInterval import getInterval
 from getPreviousDateString import getPreviousDateString
 import talib as ta
+from support_resistance import support_resistance
+from os.path import exists
+from getIndex import getIndexPreviousVal, add_cuurent_to_previous
 
 
 client = Client(settings.binanceApiKey, settings.binanceSecret)
@@ -39,6 +43,8 @@ def getPreviousData(ticker, interval, candles, strategy):
             find_if_fibonacci(historical_df, candles, ticker, interval)
         elif (strategy == 'bba') :
             bollinger_bands(historical_df, candles, ticker, interval)
+        elif (strategy == 'sup_res') :
+            support_resistance(historical_df, ticker, candles)
 
 
 def find_if_fibonacci(df, candles, ticker, interval):
@@ -55,15 +61,44 @@ def find_if_fibonacci(df, candles, ticker, interval):
         minValueIndex = df['Close'].astype(float).idxmin()
         print(maxi)
         print(mini)
+        previous_msg_file_name = "previous_msg_fib.csv"
+        file_exists = exists(previous_msg_file_name)
+        print(file_exists)
+        if (file_exists == False) :
+            with open(previous_msg_file_name, 'x') as output_file:
+                writer = csv.writer(output_file)
+                writer.writerow(['tickerName', '1m', '5m', '15m', '1h', '4h', '6h', '12h', '1d', '1w', '1month'])
+            output_file.close()
+            # head = 'tickerName, 1m, 5m, 15m, 1h, 4h, 6h, 12h, 1d, 1w, 1month'
+            # with open(previous_msg_file_name,'a') as fp:
+            #     fp.write(head+'\n')
+            # fp.close()
+            # df = pd.read_csv(previous_msg_file_name)
+            # header = ['tickerName', '1m', '5m', '15m', '1h', '4h', '6h', '12h', '1d', '1w', '1month']
+            # df.to_csv(previous_msg_file_name, columns = header)
+            
+        index, prevous_value = getIndexPreviousVal(interval, ticker, previous_msg_file_name)
+        print(index, prevous_value)
         difference = maxi - mini
         if(minValueIndex < maxValueIndex) :
             range_min = maxi - difference * 0.67
             range_max = maxi - difference * 0.6
+            
             print(temp.iloc[-1])
             if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-                message = "Alert: Fibonacci Retracement [LONG] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_max)+" \n0.67 Level : "+str(range_min)
-                for chat_id in settings.token_chatID_dict:
-                    send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
+                current_value = np.float64("{:.16g}".format(range_max + range_min))
+                print(ticker)
+                print('Current Value '+str(current_value) )
+                print('Previous Value' + str(prevous_value))
+                if(prevous_value != current_value) :
+                    print(type(prevous_value))
+                    print(type(current_value))
+                    #print(prevous_value - current_value)
+                    add_cuurent_to_previous(current_value, index, interval, previous_msg_file_name)
+                    message = "Alert: Fibonacci Retracement [LONG] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_max)+" \n0.67 Level : "+str(range_min)
+                    for chat_id in settings.token_chatID_dict:
+                        send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
+
             else :
                 print('Not Found')
         else :
@@ -71,9 +106,19 @@ def find_if_fibonacci(df, candles, ticker, interval):
             range_min = mini + difference * 0.6
             print(temp.iloc[-1])
             if temp.iloc[-1] >= range_min and temp.iloc[-1] <= range_max:
-                message = "Alert: Fibonacci Retracement [SHORT] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_min)+" \n0.67 Level : "+str(range_max)
-                for chat_id in settings.token_chatID_dict:
-                    send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
+                #current_value = format((range_max + range_min), ".16g")
+                current_value = np.float64("{:.16g}".format(range_max + range_min))
+                print(ticker)
+                print('Current Value '+str(current_value) )
+                print('Previous Value' + str(prevous_value))
+                if(prevous_value != current_value) :
+                    print(type(prevous_value))
+                    print(type(current_value))
+                    #print(prevous_value - current_value)
+                    add_cuurent_to_previous(current_value, index, interval, previous_msg_file_name)
+                    message = "Alert: Fibonacci Retracement [SHORT] \nSymbol :"+ticker+"\nInterval : "+interval+"\nThe high level is "+str(high)+", the low level is "+str(low)+"\nThere is a Fibonacci Retracement at present level of "+str(temp.iloc[-1])+"\n0.6 Level : "+str(range_min)+" \n0.67 Level : "+str(range_max)
+                    for chat_id in settings.token_chatID_dict:
+                        send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
             else :
                 print('Not Found')
 

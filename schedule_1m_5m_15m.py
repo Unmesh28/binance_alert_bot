@@ -10,8 +10,8 @@ def job(t, strategy):
     return
 
 schedule.every(1).minutes.do(job,'1m', 'fib')
-schedule.every(5).minutes.do(job,'5m', 'fib')
-schedule.every(15).minutes.do(job,'15m', 'fib')
+schedule.every(1).minutes.do(job,'5m', 'fib')
+schedule.every(1).minutes.do(job,'15m', 'fib')
 
 while True:
     schedule.run_pending()
