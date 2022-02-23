@@ -28,5 +28,5 @@ def execute(interval, strategy):
 
 
 #execute('12h', 'fib') 
-execute('1h', 'sup_res') 
+#execute('1h', 'sup_res') 
 #execute('4h')
