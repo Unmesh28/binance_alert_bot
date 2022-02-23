@@ -6,5 +6,4 @@ binanceSecret = '2FtDBi6y2WYi8Pp32ScDSYSm28uRkHg1LJMXSaLxEQJi88o4Fr1Z8uWuBhSihWX
 token_chatID_dict = {
     "2089013117" : "5081341731:AAEjxggRgpG76F-XIFswIhmVRq1syuJh9I4",
     "1780267340" : "2124635783:AAHT_myqXuWjMYqzynyqOjYWV511SXdZp_8"
-
 }

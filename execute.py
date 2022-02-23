@@ -27,6 +27,6 @@ def execute(interval, strategy):
         print('Candeles are zero fror this interval')
 
 
-execute('12h', 'fib') 
-#execute('1d', 'sup_res') 
-# execute('4h')
+#execute('12h', 'fib') 
+execute('1h', 'sup_res') 
+#execute('4h')
