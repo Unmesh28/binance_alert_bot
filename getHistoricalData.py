@@ -1,4 +1,3 @@
-import csv
 from curses import window
 from email import header, message
 from pydoc import cli
@@ -16,6 +15,7 @@ import talib as ta
 from support_resistance import support_resistance
 from os.path import exists
 from getIndex import getIndexPreviousVal, add_cuurent_to_previous
+from previous_msg_file import createNewFile
 
 
 client = Client(settings.binanceApiKey, settings.binanceSecret)
@@ -44,7 +44,7 @@ def getPreviousData(ticker, interval, candles, strategy):
         elif (strategy == 'bba') :
             bollinger_bands(historical_df, candles, ticker, interval)
         elif (strategy == 'sup_res') :
-            support_resistance(historical_df, ticker, candles)
+            support_resistance(historical_df, ticker, candles, interval)
 
 
 def find_if_fibonacci(df, candles, ticker, interval):
@@ -65,17 +65,7 @@ def find_if_fibonacci(df, candles, ticker, interval):
         file_exists = exists(previous_msg_file_name)
         print(file_exists)
         if (file_exists == False) :
-            with open(previous_msg_file_name, 'x') as output_file:
-                writer = csv.writer(output_file)
-                writer.writerow(['tickerName', '1m', '5m', '15m', '1h', '4h', '6h', '12h', '1d', '1w', '1month'])
-            output_file.close()
-            # head = 'tickerName, 1m, 5m, 15m, 1h, 4h, 6h, 12h, 1d, 1w, 1month'
-            # with open(previous_msg_file_name,'a') as fp:
-            #     fp.write(head+'\n')
-            # fp.close()
-            # df = pd.read_csv(previous_msg_file_name)
-            # header = ['tickerName', '1m', '5m', '15m', '1h', '4h', '6h', '12h', '1d', '1w', '1month']
-            # df.to_csv(previous_msg_file_name, columns = header)
+            createNewFile(previous_msg_file_name)            
             
         index, prevous_value = getIndexPreviousVal(interval, ticker, previous_msg_file_name)
         print(index, prevous_value)

@@ -2,17 +2,17 @@ import pandas as pd
 
 def getIndexPreviousVal(interval, ticker, previous_msg_file_name) :
     print('inside get index value')
-    fib_df = pd.read_csv(previous_msg_file_name)
+    df = pd.read_csv(previous_msg_file_name)
     #print(fib_df['tickerName'])
-    exists = ticker in fib_df['tickerName'].values
+    exists = ticker in df['tickerName'].values
     dfb = 0
     #print(exists)
     if (exists == True):
         print('Inside If.....')
-        dfb = next(iter(fib_df[fib_df['tickerName']==ticker].index), 'no match')
+        dfb = next(iter(df[df['tickerName']==ticker].index), 'no match')
         #print(dfb[interval][dfb])
         #print(fib_df[interval][dfb])
-        return (dfb, fib_df[interval][dfb])
+        return (dfb, df[interval][dfb])
     else : 
         # data = {
         #     'tickerName' : [ticker],
