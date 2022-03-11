@@ -19,7 +19,7 @@ def job(t, strategy):
 # schedule.every(1).minutes.do(job,'12h', 'fib')
 # schedule.every(1).minutes.do(job,'1d', 'fib')
 
-schedule.every(1).minutes.do(job,'1m', 'sup_res')
+#schedule.every(1).minutes.do(job,'1m', 'sup_res')
 schedule.every(1).minutes.do(job,'5m', 'sup_res')
 schedule.every(1).minutes.do(job,'15m', 'sup_res')
 schedule.every(1).minutes.do(job,'1h', 'sup_res')
