@@ -83,14 +83,14 @@ def support_resistance(df, ticker, candles, interval):
     if (current_support != prevous_support) :
         add_cuurent_to_previous(current_support, index1, interval, previous_msg_file_name_support)
         if(temp.iloc[-1] < current_support) :
-            message = "Alert: Support Broken \nSymbol :"+ticker+"\nInterval : "+interval
+            message = "Alert: Support Hit " +str(temp.iloc[-1]) + "\nSymbol :"+ticker+"\nInterval : "+interval
             for chat_id in settings.token_chatID_dict:
                 send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
 
     if (current_resistance != prevous_resistance) :
         add_cuurent_to_previous(current_resistance, index2, interval, previous_msg_file_name_resistance)
         if(temp.iloc[-1] > current_resistance) :
-            message = "Alert: Resistance Broken \nSymbol :"+ticker+"\nInterval : "+interval
+            message = "Alert: Resistance Hit at " +str(temp.iloc[-1]) + "\nSymbol :"+ticker+"\nInterval : "+interval
             for chat_id in settings.token_chatID_dict:
                 send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
 
