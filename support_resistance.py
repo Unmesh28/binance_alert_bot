@@ -79,18 +79,21 @@ def support_resistance(df, ticker, candles, interval):
                 current_resistance = np.float64("{:.16g}".format(resistance_levels[i]))
             else :
                 current_resistance = prevous_resistance
+
+    print(support_levels)
+    print(resistance_levels)
     
     if (current_support != prevous_support) :
         add_cuurent_to_previous(current_support, index1, interval, previous_msg_file_name_support)
         if(temp.iloc[-1] < current_support) :
-            message = "Alert: Support Hit " +str(temp.iloc[-1]) + "\nSymbol :"+ticker+"\nInterval : "+interval + "\nSupport Levels : " + str(support_levels.sort())
+            message = "Alert: Support Hit " +str(temp.iloc[-1]) + "\nSymbol :"+ticker+"\nInterval : "+interval + "\nSupport Levels : " + str(support_levels)
             for chat_id in settings.token_chatID_dict:
                 send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
 
     if (current_resistance != prevous_resistance) :
         add_cuurent_to_previous(current_resistance, index2, interval, previous_msg_file_name_resistance)
         if(temp.iloc[-1] > current_resistance) :
-            message = "Alert: Resistance Hit at " +str(temp.iloc[-1]) + "\nSymbol :"+ticker+"\nInterval : "+interval + "\nResistance Levels : " + str(resistance_levels.sort())
+            message = "Alert: Resistance Hit at " +str(temp.iloc[-1]) + "\nSymbol :"+ticker+"\nInterval : "+interval + "\nResistance Levels : " + str(resistance_levels)
             for chat_id in settings.token_chatID_dict:
                 send_message(chat_id, "sendMessage", message, settings.token_chatID_dict[chat_id])
 

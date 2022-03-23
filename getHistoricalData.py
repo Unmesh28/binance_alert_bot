@@ -35,6 +35,7 @@ def getPreviousData(ticker, interval, candles, strategy):
 
     except: 
         print("Some error from binance API [Ticker must be delisted]")
+        return 0
    
     if historical_df.empty:
         print('DataFrame is empty!')
