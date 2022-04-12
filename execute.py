@@ -7,6 +7,8 @@ from getIntervalCandles import getCandles
 
 def execute(interval, strategy):
     records_data = readFromGoogleSpreadSheet(settings.credentials_path, settings.googlesheet_name, 0)
+    if (records_data == 0) :
+        return 0
     ticker_df = pd.DataFrame.from_dict(records_data)
     tickers = ticker_df['tickerName']
     index = ticker_df.index
@@ -30,3 +32,4 @@ def execute(interval, strategy):
 #execute('1h', 'bba') 
 #execute('1h', 'sup_res') 
 #execute('4h')
+#getPreviousData("ADAUSDT", "1h", 100, "sup_res") 
