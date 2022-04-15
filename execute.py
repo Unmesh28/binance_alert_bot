@@ -2,7 +2,7 @@ from matplotlib.pyplot import get
 import pandas as pd
 import settings
 from readSpreadSheet import readFromGoogleSpreadSheet
-from getHistoricalData import getPreviousData
+from getHistoricalData import getPreviousData, getPreviousDataNew
 from getIntervalCandles import getCandles
 
 def execute(interval, strategy):
@@ -21,6 +21,7 @@ def execute(interval, strategy):
         candles = getCandles(interval, 1)
     if(strategy == 'sup_res') : 
         candles = getCandles(interval, 2)
+    else : candles = 60
     
     if candles > 0 :
         for i in one_indices :
@@ -28,8 +29,10 @@ def execute(interval, strategy):
     else :
         print('Candeles are zero fror this interval')
 
-
+#execute('1h', "momentum")
 #execute('1h', 'bba') 
 #execute('1h', 'sup_res') 
 #execute('4h')
-#getPreviousData("ADAUSDT", "1h", 100, "sup_res") 
+# getPreviousData("ADAUSDT", "1h", 100, "sup_res") 
+getPreviousDataNew("BTCUSDT", "5m", 90, "momentum") 
+# getPreviousDataNew("BTCUSDT", '1h', 60, 'momentum') 
